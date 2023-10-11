@@ -1,10 +1,12 @@
 package org.example;
 
-public class SSDDisk extends ElektronickeZarizeni implements Workable{
-    float celkovaKapacitaPameti;
+import static java.lang.Math.round;
 
-    public SSDDisk(float celkovaKapacitaPameti) {
+public class SSDDisk extends ElektronickeZarizeni implements Workable, MemoryFunctions{
+
+    public SSDDisk(int celkovaKapacitaPameti) {
         this.celkovaKapacitaPameti = celkovaKapacitaPameti;
+        this.aktualniKapacitaPameti = celkovaKapacitaPameti;
     }
 
     @Override
@@ -13,5 +15,51 @@ public class SSDDisk extends ElektronickeZarizeni implements Workable{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int getTotalCapacity() {
+        return celkovaKapacitaPameti;
+    }
+
+    @Override
+    public int getActualCapacity() {
+        return aktualniKapacitaPameti;
+    }
+
+    @Override
+    public boolean canUseMemory(int memorySize) {
+        if (memorySize <= getActualCapacity()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void useMemory(int memorySize) {
+        if (canUseMemory(memorySize)){
+            aktualniKapacitaPameti -= memorySize;
+        }
+    }
+
+    @Override
+    public boolean canRemoveMemory(int memorySize) {
+        if (memorySize <= getActualCapacity()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void removeMemory(int memorySize) {
+        if (canRemoveMemory(memorySize)) {
+            aktualniKapacitaPameti += memorySize;
+        }
+
+    }
+
+    @Override
+    public float getPercentageUsage() {
+        return round((float)aktualniKapacitaPameti / (float)celkovaKapacitaPameti * 100);
     }
 }

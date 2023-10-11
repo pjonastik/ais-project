@@ -1,6 +1,8 @@
 package org.example;
 
-public class Computer extends ElektronickeZarizeni implements Workable{
+import static java.lang.Math.round;
+
+public class Computer extends ElektronickeZarizeni implements Workable, MemoryFunctions{
     private int pocetPredeslychMajitelu;
     private SSDDisk ssdDisk;
     private SDCard sdCard;
@@ -10,16 +12,6 @@ public class Computer extends ElektronickeZarizeni implements Workable{
         this.ssdDisk = ssdDisk;
     }
 
-    public Computer(int pocetPredeslychMajitelu, SSDDisk ssdDisk) {
-        this.pocetPredeslychMajitelu = pocetPredeslychMajitelu;
-        this.ssdDisk = ssdDisk;
-    }
-
-    public float getTotalCapacity(){
-        return  this.ssdDisk.celkovaKapacitaPameti +
-                this.sdCard.getCelkovaKapacitaPameti() +
-                this.usbKey.getCelkovaKapacitaPameti();
-    }
 
     public void mount(SDCard sdCard){
         this.sdCard = sdCard;
@@ -29,12 +21,84 @@ public class Computer extends ElektronickeZarizeni implements Workable{
         this.usbKey = usbKey;
     }
 
+    public void mount(SSDDisk ssdDisk){
+        throw new SsdDiskUnmoutableException("Nelze pripojit ssd disk kdyz uz jeden mame");
+    }
+
     public void unmount(SDCard sdCard){
         this.sdCard = null;
     }
 
     public void unmount(USBKey usbKey){
         this.usbKey = null;
+    }
+
+    @Override
+    public int getTotalCapacity() {
+        return ssdDisk.getTotalCapacity() +
+                usbKey.getTotalCapacity() +
+                sdCard.getTotalCapacity();
+    }
+
+    @Override
+    public int getActualCapacity() {
+        return ssdDisk.getActualCapacity() +
+                usbKey.getActualCapacity() +
+                sdCard.getActualCapacity();
+    }
+
+    @Override
+    public boolean canUseMemory(int memorySize) {
+        if (!(ssdDisk.isWorking() && usbKey.isWorking() && sdCard.isWorking())) {
+            throw new ComponentIllegalStateException("Jedno z medii neni funkcni, nelze ulozit data do pameti");
+        }
+        if (memorySize <= getActualCapacity()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void useMemory(int memorySize) {
+        if (canUseMemory(memorySize)){
+            if (ssdDisk.getActualCapacity() >= memorySize) {
+                ssdDisk.useMemory(memorySize);
+            } else if (sdCard.getActualCapacity() >= memorySize){
+                sdCard.useMemory(memorySize);
+            } else if (usbKey.getActualCapacity() >= memorySize){
+                usbKey.useMemory(memorySize);
+            }
+        }
+    }
+
+    @Override
+    public boolean canRemoveMemory(int memorySize) {
+        if (!(ssdDisk.isWorking() && usbKey.isWorking() && sdCard.isWorking())) {
+            throw new ComponentIllegalStateException("Jedno z medii neni funkcni, nelze odstranit pamet");
+        }
+        if (memorySize <= getActualCapacity()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void removeMemory(int memorySize) {
+        if (canRemoveMemory(memorySize)) {
+            if (ssdDisk.getTotalCapacity() - ssdDisk.getActualCapacity() >= memorySize) {
+                ssdDisk.removeMemory(memorySize);
+            } else if (sdCard.getTotalCapacity() - sdCard.getActualCapacity() >= memorySize){
+                sdCard.removeMemory(memorySize);
+            } else if (usbKey.getTotalCapacity() - usbKey.getActualCapacity() >= memorySize){
+                usbKey.removeMemory(memorySize);
+            }
+        }
+
+    }
+
+    @Override
+    public float getPercentageUsage() {
+        return round((float)getActualCapacity() / (float)getTotalCapacity() * 100);
     }
 
     @Override

@@ -5,7 +5,10 @@ public class ElektronickeZarizeni implements Workable{
     protected String model;
     protected String datumVyroby;
     protected String datumExpirace;
-    protected boolean jeFunkcni;
+    protected boolean jeFunkcni = true;
+    protected int celkovaKapacitaPameti;
+    protected int aktualniKapacitaPameti;
+    protected int pocetPredeslychMajitelu;
 
 
 
