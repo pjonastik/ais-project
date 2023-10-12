@@ -1,5 +1,10 @@
 package org.example;
 
+import org.example.hardware.Computer;
+import org.example.hardware.SDCard;
+import org.example.hardware.SSDDisk;
+import org.example.hardware.USBKey;
+
 /**
  * Hello world!
  *

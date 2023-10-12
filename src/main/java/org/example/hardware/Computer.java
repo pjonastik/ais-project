@@ -1,8 +1,12 @@
-package org.example;
+package org.example.hardware;
+
+import org.example.Workable;
+import org.example.exceptions.ComponentIllegalStateException;
+import org.example.exceptions.SsdDiskUnmoutableException;
 
 import static java.lang.Math.round;
 
-public class Computer extends ElektronickeZarizeni implements Workable, MemoryFunctions{
+public class Computer extends HardwareParent implements Workable {
     private int pocetPredeslychMajitelu;
     private SSDDisk ssdDisk;
     private SDCard sdCard;
@@ -33,21 +37,18 @@ public class Computer extends ElektronickeZarizeni implements Workable, MemoryFu
         this.usbKey = null;
     }
 
-    @Override
     public int getTotalCapacity() {
         return ssdDisk.getTotalCapacity() +
                 usbKey.getTotalCapacity() +
                 sdCard.getTotalCapacity();
     }
 
-    @Override
     public int getActualCapacity() {
         return ssdDisk.getActualCapacity() +
                 usbKey.getActualCapacity() +
                 sdCard.getActualCapacity();
     }
 
-    @Override
     public boolean canUseMemory(int memorySize) {
         if (!(ssdDisk.isWorking() && usbKey.isWorking() && sdCard.isWorking())) {
             throw new ComponentIllegalStateException("Jedno z medii neni funkcni, nelze ulozit data do pameti");
@@ -58,7 +59,6 @@ public class Computer extends ElektronickeZarizeni implements Workable, MemoryFu
         return false;
     }
 
-    @Override
     public void useMemory(int memorySize) {
         if (canUseMemory(memorySize)){
             if (ssdDisk.getActualCapacity() >= memorySize) {
@@ -71,18 +71,16 @@ public class Computer extends ElektronickeZarizeni implements Workable, MemoryFu
         }
     }
 
-    @Override
     public boolean canRemoveMemory(int memorySize) {
         if (!(ssdDisk.isWorking() && usbKey.isWorking() && sdCard.isWorking())) {
             throw new ComponentIllegalStateException("Jedno z medii neni funkcni, nelze odstranit pamet");
         }
-        if (memorySize <= getActualCapacity()) {
+        if (memorySize <= (getTotalCapacity() - getActualCapacity())) {
             return true;
         }
         return false;
     }
 
-    @Override
     public void removeMemory(int memorySize) {
         if (canRemoveMemory(memorySize)) {
             if (ssdDisk.getTotalCapacity() - ssdDisk.getActualCapacity() >= memorySize) {
@@ -96,7 +94,6 @@ public class Computer extends ElektronickeZarizeni implements Workable, MemoryFu
 
     }
 
-    @Override
     public float getPercentageUsage() {
         return round((float)getActualCapacity() / (float)getTotalCapacity() * 100);
     }
