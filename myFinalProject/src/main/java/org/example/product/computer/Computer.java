@@ -50,7 +50,10 @@ public class Computer extends Product implements Ownerable, Memorable {
         return (freeCapacity - memorySize) >= 0;
     }
 
-
+    /**
+     * Standard approach with foreach
+     * @param memorySize
+     */
 //    @Override
 //    public void useMemory(int memorySize) {
 //
