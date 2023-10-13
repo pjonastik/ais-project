@@ -36,7 +36,7 @@ public class HardwareParent implements Workable {
     }
 
     public boolean canRemoveMemory(int memorySize) {
-        if (memorySize <= getActualCapacity()) {
+        if (getActualCapacity() <= memorySize && getActualCapacity() < getTotalCapacity()) {
             return true;
         }
         return false;

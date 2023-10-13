@@ -83,11 +83,11 @@ public class Computer extends HardwareParent implements Workable {
 
     public void removeMemory(int memorySize) {
         if (canRemoveMemory(memorySize)) {
-            if (ssdDisk.getTotalCapacity() - ssdDisk.getActualCapacity() >= memorySize) {
+            if (ssdDisk.canRemoveMemory(memorySize)) {
                 ssdDisk.removeMemory(memorySize);
-            } else if (sdCard.getTotalCapacity() - sdCard.getActualCapacity() >= memorySize){
+            } else if (sdCard.canRemoveMemory(memorySize)){
                 sdCard.removeMemory(memorySize);
-            } else if (usbKey.getTotalCapacity() - usbKey.getActualCapacity() >= memorySize){
+            } else if (usbKey.canRemoveMemory(memorySize)){
                 usbKey.removeMemory(memorySize);
             }
         }
