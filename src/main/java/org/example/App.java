@@ -8,6 +8,6 @@ public class App
 {
     public static void main( String[] args )
     {
-        Computer pc = new Computer();
+       // Computer pc = new Computer();
     }
 }
