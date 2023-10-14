@@ -1,6 +1,6 @@
 package org.example;
 
-public class Device {
+public abstract class Device implements IWorkable{
 
     private String brand;
     private String model;
@@ -15,4 +15,10 @@ public class Device {
         this.expirationDate = expirationDate;
         this.working = working;
     }
+
+    @Override
+    public boolean isWorking() {
+        return working;
+    }
+
 }

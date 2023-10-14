@@ -1,10 +1,7 @@
 package org.example;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
-public class Computer extends Device{
+public class Computer extends Device {
 
     private int exOwners;
     private float memoryCapacity;
@@ -14,4 +11,6 @@ public class Computer extends Device{
         this.exOwners = exOwners;
         this.memoryCapacity = memoryCapacity;
     }
+
+
 }
