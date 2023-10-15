@@ -12,4 +12,6 @@ public interface Memorable {
     float getPercentageUsage();
 
     boolean isMountable();
+
+    int getFreeCapacity();
 }

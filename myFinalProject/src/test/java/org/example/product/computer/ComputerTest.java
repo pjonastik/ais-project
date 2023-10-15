@@ -4,11 +4,10 @@ import org.example.product.memory.Memorable;
 import org.example.product.memory.SdCard;
 import org.example.product.memory.SsdDisk;
 import org.example.product.memory.UsbKey;
-import org.example.product.memory.exception.MemoryBrokenException;
+import org.example.product.memory.exception.ComponentIllegalStateException;
 import org.example.product.memory.exception.RemoveMemoryException;
 import org.example.product.memory.exception.UseMemoryException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +65,16 @@ class ComputerTest {
     }
 
     @Test
+    void unmountUnsupportedMemoryDevices2() {
+        Assertions.assertThrows(SsdDiskUnmoutableException.class, () -> {
+            Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
+            Computer computer = new Computer("Lenovo", "T460", ssdDisk);
+
+            computer.unmount(ssdDisk);
+        });
+    }
+
+    @Test
     void getActualCapacity() {
         Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
         ssdDisk.useMemory(50);
@@ -83,6 +92,20 @@ class ComputerTest {
         computer.mount(sdCard);
 
         assertThat(computer.getActualCapacity()).isEqualTo(70);
+    }
+
+    @Test
+    void getFreeCapacity() {
+        Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
+        ssdDisk.useMemory(100);
+
+        Computer computer = new Computer("Lenovo", "T460", ssdDisk);
+
+        Memorable usb = new UsbKey("Keystone", "X2", 100);
+        usb.useMemory(50);
+        computer.mount(usb);
+
+        assertThat(computer.getFreeCapacity()).isEqualTo(450);
     }
 
     @Test
@@ -123,20 +146,17 @@ class ComputerTest {
 
     @Test
     void useMemory() {
-        Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
+        Memorable ssdDisk = new SsdDisk("Samsung", "X1", 4);
         Computer computer = new Computer("Lenovo", "T460", ssdDisk);
 
-        Memorable usb = new UsbKey("Keystone", "X2", 50);
-        Memorable sdCard = new SdCard("Keystone", "N2", 50);
+        Memorable usb = new UsbKey("Keystone", "X2", 2);
+        Memorable sdCard = new SdCard("Keystone", "N2", 2);
         computer.mount(usb);
         computer.mount(sdCard);
 
-        computer.useMemory(50);
-        computer.useMemory(50);
-        computer.useMemory(50);
-        computer.useMemory(50);
+        computer.useMemory(8);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(200);
+        assertThat(computer.getActualCapacity()).isEqualTo(8);
     }
 
     @Test
@@ -151,7 +171,7 @@ class ComputerTest {
 
     @Test
     void useMemory_BrokenMemory() {
-        Assertions.assertThrows(MemoryBrokenException.class, () -> {
+        Assertions.assertThrows(ComponentIllegalStateException.class, () -> {
             SsdDisk ssdDisk = new SsdDisk("Samsung", "X1", 500);
             ssdDisk.setWorking(false);
             Computer computer = new Computer("Lenovo", "T460", ssdDisk);
@@ -162,20 +182,21 @@ class ComputerTest {
 
     @Test
     void removeMemory() {
-        Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
-        ssdDisk.useMemory(100);
+        Memorable ssdDisk = new SsdDisk("Samsung", "X1", 4);
         Computer computer = new Computer("Lenovo", "T460", ssdDisk);
 
-        computer.removeMemory(30);
-        computer.removeMemory(30);
-        computer.removeMemory(30);
+        Memorable usb = new UsbKey("Keystone", "X2", 2);
+        computer.mount(usb);
+        computer.useMemory(6);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(10);
+        computer.removeMemory(5);
+
+        assertThat(computer.getActualCapacity()).isEqualTo(1);
     }
 
     @Test
     void removeMemory_BrokenMemory() {
-        Assertions.assertThrows(MemoryBrokenException.class, () -> {
+        Assertions.assertThrows(ComponentIllegalStateException.class, () -> {
             SsdDisk ssdDisk = new SsdDisk("Samsung", "X1", 500);
             ssdDisk.useMemory(100);
             ssdDisk.setWorking(false);

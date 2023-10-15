@@ -3,11 +3,13 @@ package org.example.product.computer;
 import org.example.product.Ownerable;
 import org.example.product.Product;
 import org.example.product.memory.Memorable;
+import org.example.product.memory.SsdDisk;
 import org.example.product.memory.exception.RemoveMemoryException;
 import org.example.product.memory.exception.UseMemoryException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Computer extends Product implements Ownerable, Memorable {
@@ -45,68 +47,58 @@ public class Computer extends Product implements Ownerable, Memorable {
     }
 
     @Override
-    public boolean canUseMemory(int memorySize) {
+    public int getFreeCapacity() {
+        return getTotalCapacity() - getActualCapacity();
+    }
+
+    @Override
+    public boolean canUseMemory(int memoryToBeUsed) {
         int freeCapacity = getTotalCapacity() - getActualCapacity();
-        return (freeCapacity - memorySize) >= 0;
+        return (freeCapacity - memoryToBeUsed) >= 0;
     }
 
-    /**
-     * Standard approach with foreach
-     * @param memorySize
-     */
-//    @Override
-//    public void useMemory(int memorySize) {
-//
-//        Memorable memoryWithEnoughSpace = null;
-//        for (Memorable memory : memories) {
-//            if (memory.canUseMemory(memorySize)) {
-//                memoryWithEnoughSpace = memory;
-//            }
-//        }
-//
-//        if (memoryWithEnoughSpace == null) {
-//            throw new UseMemoryException(
-//                    String.format("Memory usage ['%s'/'%s']. Not enough space for '%s'.",
-//                            getActualCapacity(), getTotalCapacity(), memorySize));
-//        }
-//
-//        memoryWithEnoughSpace.useMemory(memorySize);
-//    }
-
-    /**
-     * Stream API implementation
-     */
     @Override
-    public void useMemory(int memorySize) {
-
-        Optional<Memorable> memory = memories.stream()
-                .filter(m -> m.canUseMemory(memorySize))
-                .findFirst();
-
-
-        Memorable memorable = memory.orElseThrow(() -> new UseMemoryException(
+    public void useMemory(int memoryToBeUsed) {
+        if (getFreeCapacity() < memoryToBeUsed) {
+            throw new UseMemoryException(
                 String.format("Memory usage ['%s'/'%s']. Not enough space for '%s'.",
-                        getActualCapacity(), getTotalCapacity(), memorySize)));
+                        getActualCapacity(), getTotalCapacity(), memoryToBeUsed));
+        }
 
-        memorable.useMemory(memorySize);
+        int restOfMemorySize = memoryToBeUsed;
+        for (Memorable memory : memories) {
+            if (memory.canUseMemory(restOfMemorySize)) {
+                memory.useMemory(restOfMemorySize);
+                break;
+            } else {
+                memory.useMemory(memory.getFreeCapacity());
+                restOfMemorySize -= memory.getFreeCapacity();
+            }
+        }
     }
 
     @Override
-    public boolean canRemoveMemory(int memorySize) {
-        return memorySize <= getActualCapacity();
+    public boolean canRemoveMemory(int memoryToBeRemoved) {
+        return memoryToBeRemoved <= getActualCapacity();
     }
 
     @Override
-    public void removeMemory(int memorySize) {
-        Optional<Memorable> memory = memories.stream()
-                .filter(m -> m.canRemoveMemory(memorySize))
-                .findFirst();
-        if (memory.isEmpty()) {
+    public void removeMemory(int memoryToBeRemoved) {
+        if (getActualCapacity() < memoryToBeRemoved) {
             throw new RemoveMemoryException(
                     String.format("Memory usage ['%s'/'%s']. Not enough used memory to remove space '%s' Mb.",
-                            getActualCapacity(), getTotalCapacity(), memorySize));
-        } else {
-            memory.get().removeMemory(memorySize);
+                            getActualCapacity(), getTotalCapacity(), memoryToBeRemoved));
+        }
+
+        int restOfMemorySize = memoryToBeRemoved;
+        for (Memorable memory : memories) {
+            if (memory.canRemoveMemory(restOfMemorySize)) {
+                memory.removeMemory(restOfMemorySize);
+                break;
+            } else {
+                restOfMemorySize -= memory.getActualCapacity();
+                memory.removeMemory(memory.getActualCapacity());
+            }
         }
     }
 
@@ -126,7 +118,9 @@ public class Computer extends Product implements Ownerable, Memorable {
 
     public void unmount(Memorable memory) {
         if (!memory.isMountable()) {
-            throw new UnmountMemoryException("You cannot unmount this type of memory from computer! " + memory );
+//            if (memory instanceof SsdDisk) { //does not have to bee here since there is only one such exception
+                throw new SsdDiskUnmoutableException("You cannot unmount this type of memory from computer! " + memory );
+//            }
         }
 
         Optional<Memorable> first = memories.stream()
@@ -137,5 +131,33 @@ public class Computer extends Product implements Ownerable, Memorable {
             memories.remove(memory);
         }
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Computer)) return false;
+        if (!super.equals(o)) return false;
+        Computer computer = (Computer) o;
+        return numberOfPreviousOwners == computer.numberOfPreviousOwners
+                && Objects.equals(memories, computer.memories);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), memories, numberOfPreviousOwners);
+    }
+
+    @Override
+    public String toString() {
+        return "Computer{" +
+                "memories=" + memories +
+                ", numberOfPreviousOwners=" + numberOfPreviousOwners +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", dateOfMade=" + dateOfMade +
+                ", expirationDate=" + expirationDate +
+                ", isWorking=" + isWorking +
+                '}';
     }
 }

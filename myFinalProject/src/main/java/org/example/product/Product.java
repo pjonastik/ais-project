@@ -1,7 +1,6 @@
 package org.example.product;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -51,9 +50,13 @@ public abstract class Product implements Workable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Product)) return false;
         Product product = (Product) o;
-        return isWorking == product.isWorking && Objects.equals(brand, product.brand) && Objects.equals(model, product.model) && Objects.equals(dateOfMade, product.dateOfMade) && Objects.equals(expirationDate, product.expirationDate);
+        return isWorking == product.isWorking &&
+                Objects.equals(brand, product.brand) &&
+                Objects.equals(model, product.model) &&
+                Objects.equals(dateOfMade, product.dateOfMade) &&
+                Objects.equals(expirationDate, product.expirationDate);
     }
 
     @Override

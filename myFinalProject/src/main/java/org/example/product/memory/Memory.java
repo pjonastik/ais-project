@@ -1,7 +1,7 @@
 package org.example.product.memory;
 
 import org.example.product.Product;
-import org.example.product.memory.exception.MemoryBrokenException;
+import org.example.product.memory.exception.ComponentIllegalStateException;
 import org.example.product.memory.exception.RemoveMemoryException;
 import org.example.product.memory.exception.UseMemoryException;
 
@@ -26,6 +26,11 @@ public abstract class Memory extends Product implements Memorable {
     }
 
     @Override
+    public int getFreeCapacity() {
+        return totalCapacity - actualCapacity;
+    }
+
+    @Override
     public boolean canUseMemory(int memorySize) {
         int freeCapacity = totalCapacity - actualCapacity;
         return (freeCapacity - memorySize) >= 0;
@@ -34,7 +39,7 @@ public abstract class Memory extends Product implements Memorable {
     @Override
     public void useMemory(int memorySize) {
         if (!isWorking()) {
-            throw new MemoryBrokenException("Memory is not working :(");
+            throw new ComponentIllegalStateException("Memory is not working :(");
         }
         if (!canUseMemory(memorySize)) {
             throw new UseMemoryException(
@@ -52,7 +57,7 @@ public abstract class Memory extends Product implements Memorable {
     @Override
     public void removeMemory(int memorySize) {
         if (!isWorking()) {
-            throw new MemoryBrokenException("Memory is not working :(");
+            throw new ComponentIllegalStateException("Memory is not working :(");
         }
         if (!canRemoveMemory(memorySize)) {
             throw new RemoveMemoryException(
@@ -69,10 +74,11 @@ public abstract class Memory extends Product implements Memorable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Memory)) return false;
         if (!super.equals(o)) return false;
         Memory memory = (Memory) o;
-        return totalCapacity == memory.totalCapacity && actualCapacity == memory.actualCapacity;
+        return totalCapacity == memory.totalCapacity &&
+                actualCapacity == memory.actualCapacity;
     }
 
     @Override

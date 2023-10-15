@@ -1,7 +1,6 @@
 package org.example.product.memory;
 
-import org.example.product.Product;
-import org.example.product.memory.exception.MemoryBrokenException;
+import org.example.product.memory.exception.ComponentIllegalStateException;
 import org.example.product.memory.exception.UseMemoryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +78,7 @@ class MemoryTest {
         };
         memory.setWorking(false);
 
-        Assertions.assertThrows(MemoryBrokenException.class, () -> {
+        Assertions.assertThrows(ComponentIllegalStateException.class, () -> {
             memory.useMemory(0);
         });
     }
@@ -114,7 +113,7 @@ class MemoryTest {
         };
         memory.setWorking(false);
 
-        Assertions.assertThrows(MemoryBrokenException.class, () -> {
+        Assertions.assertThrows(ComponentIllegalStateException.class, () -> {
             memory.removeMemory(0);
         });
     }
@@ -126,5 +125,14 @@ class MemoryTest {
         memorable.useMemory(250);
 
         assertThat(memorable.getPercentageUsage()).isEqualTo(0.5f);
+    }
+
+    @Test
+    void getFreeCapacity() {
+        assertThat(memorable.getFreeCapacity()).isEqualTo(memorable.getTotalCapacity());
+
+        memorable.useMemory(100);
+
+        assertThat(memorable.getFreeCapacity()).isEqualTo(400);
     }
 }
