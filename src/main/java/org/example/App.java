@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Memory.UsbKey;
+
 /**
  Computer musí mať nasledovné vlanosti:
  Validne vytovrený objekt Computer je taký ktorý
@@ -8,16 +10,6 @@ package org.example;
  Implmenetuj metodu
  - Computer.mount a Computer.unmountnt- ktora umozni pripojit/odpojit SdCard a UsbKey do pocitataca.
     - Ak by sme sa pokusili vlozit SsdDisk, vyhodi sa vynimka SsdDiskUnmoutableException.
- Kazde pamatove medium (SsdDisk, SdCard, UsbKey) a Computer bude poskytovat metody
- - getTotalCapacity():int	     			// MB
- - getActualCapacity():int			// MB
- - canUseMemory(int memorySize): boolean
- - useMemory(int memorySize) 			// MB
- - canRemoveMemory(int memorySize)        	// MB
- - removeMomory(int memorySize)
- - hasEnoughCapacityFor(int memorySize): boolean
- - getPerctentalUsage()
- - aktualne vyuzitie pamate v perenctach
  Implementuj metódy Computer.useMemory tak,
  - computer vybral miesto kde sa pouzije pamat.
  - Moze to byt SsdDisk, UsbKey, SsdDisk….
@@ -40,6 +32,11 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        usbKez();
+    }
+
+    private static void usbKez(){
+        UsbKey usbKey= new UsbKey(2, "King", "13", "25.12.2020", "21.21.2050", true, "A");
+
     }
 }

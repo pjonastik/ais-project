@@ -1,22 +1,24 @@
-package org.example;
+package org.example.Memory;
 
-import java.util.Date;
 import java.util.Objects;
 
-/*
 
- */
-public class SdCard implements Workable{
+public class SdCard extends Memory {
 
     private int totalMemoryCapacity;
     private String brand;
     private String model;
-    private Date manufactureDate;
-    private Date expirationDate;
+    private String manufactureDate;
+    private String expirationDate;
     private int numberOfPreviousOwner;
     private Boolean working;
+    public int usedMemory;
 
-    public SdCard(int totalMemoryCapacity, String brand, String model, Date manufactureDate, Date expirationDate, int numberOfPreviousOwner, Boolean working) {
+    public int getActualMemoryCapacity() {
+        return totalMemoryCapacity - usedMemory;
+    }
+
+    public SdCard(int totalMemoryCapacity, String brand, String model, String manufactureDate, String expirationDate, int numberOfPreviousOwner, Boolean working) {
         this.totalMemoryCapacity = totalMemoryCapacity;
         this.brand = brand;
         this.model = model;
@@ -30,27 +32,26 @@ public class SdCard implements Workable{
         return totalMemoryCapacity;
     }
 
-    public int getActualCapacity(int consumedMemory){
-        return totalMemoryCapacity - consumedMemory;
-    }
-
     public Boolean canUseMemory(int memorySize){
-        if (getActualCapacity(memorySize)>0){
+        if (getActualMemoryCapacity()-memorySize>0){
             return true;
         }else return false;
     }
 
-    public void useMemory(int memorySize){
-
+    public void useMemory(int memorySize)  {
+            usedMemory=usedMemory+memorySize;
     }
-    public void canRemoveMemory(int memorySize) {
 
+    public Boolean canRemoveMemory(int memorySize) {
+        if (usedMemory-memorySize>=0){
+            return true;
+        }else return false;
     }
     public void removeMemory(int memorySize){
-
+        usedMemory = usedMemory-memorySize;
     }
     public float getPerctentalUsage(){
-        return 0;
+        return 100/totalMemoryCapacity*usedMemory;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class SdCard implements Workable{
     }
 
     @Override
-    public Boolean isWorking() {
-        return null;
+    public Boolean isWorking(){
+        return working;
     }
 }

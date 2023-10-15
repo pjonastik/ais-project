@@ -1,7 +1,8 @@
-package org.example;
+package org.example.Memory;
 
-import java.util.Date;
 import java.util.Objects;
+import org.example.ComputerException;
+import org.example.Workable;
 
 /*
  *  Vytvor triedu UsbKey s parametrami
@@ -13,17 +14,22 @@ import java.util.Objects;
  * stav reprezentujúci funkčnsť (áno vs nie)
  * usb type (A,,B,C ...)
  */
-public class UsbKey implements Workable{
+public class UsbKey extends Memory {
 
     private int totalMemoryCapacity;
     private String brand;
     private String model;
-    private Date manufactureDate;
-    private Date expirationDate;
+    private String manufactureDate;
+    private String expirationDate;
     private Boolean working;
     private String type;
+    public int usedMemory;
 
-    public UsbKey(int totalMemoryCapacity, String brand, String model, Date manufactureDate, Date expirationDate, Boolean working, String type) {
+    public int getActualMemoryCapacity() {
+        return totalMemoryCapacity - usedMemory;
+    }
+
+    public UsbKey(int totalMemoryCapacity, String brand, String model, String manufactureDate, String expirationDate, Boolean working, String type) {
         this.totalMemoryCapacity = totalMemoryCapacity;
         this.brand = brand;
         this.model = model;
@@ -37,27 +43,27 @@ public class UsbKey implements Workable{
         return totalMemoryCapacity;
     }
 
-    public int getActualCapacity(int consumedMemory){
-        return totalMemoryCapacity - consumedMemory;
-    }
-
     public Boolean canUseMemory(int memorySize){
-        if (getActualCapacity(memorySize)>0){
+        if (getActualMemoryCapacity()-memorySize>0){
             return true;
         }else return false;
     }
 
-    public void useMemory(int memorySize){
-
+    public void useMemory(int memorySize) {
+            usedMemory=usedMemory+memorySize;
     }
-    public void canRemoveMemory(int memorySize) {
 
+    public Boolean canRemoveMemory(int memorySize) {
+        if (usedMemory-memorySize>=0){
+            return true;
+        }else return false;
     }
+
     public void removeMemory(int memorySize){
-
+        usedMemory = usedMemory-memorySize;
     }
     public float getPerctentalUsage(){
-        return 0;
+        return 100/totalMemoryCapacity*usedMemory;
     }
 
 
@@ -94,7 +100,7 @@ public class UsbKey implements Workable{
     }
 
     @Override
-    public Boolean isWorking() {
-        return null;
+    public Boolean isWorking(){
+        return working;
     }
 }

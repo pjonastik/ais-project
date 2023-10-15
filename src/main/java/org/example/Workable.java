@@ -7,5 +7,5 @@ isWorking() - návratový typ boolean
  */
 public interface Workable {
 
-    Boolean isWorking();
+    Boolean isWorking() throws ComputerException;
 }
