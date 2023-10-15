@@ -1,5 +1,7 @@
 package org.example.product.computer;
 
+import org.example.product.computer.exception.SsdDiskUnmountableException;
+import org.example.product.computer.exception.UnmountMemoryException;
 import org.example.product.memory.Memorable;
 import org.example.product.memory.SdCard;
 import org.example.product.memory.SsdDisk;
@@ -66,7 +68,7 @@ class ComputerTest {
 
     @Test
     void unmountUnsupportedMemoryDevices2() {
-        Assertions.assertThrows(SsdDiskUnmoutableException.class, () -> {
+        Assertions.assertThrows(SsdDiskUnmountableException.class, () -> {
             Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
             Computer computer = new Computer("Lenovo", "T460", ssdDisk);
 

@@ -2,8 +2,8 @@ package org.example.product.computer;
 
 import org.example.product.Ownerable;
 import org.example.product.Product;
+import org.example.product.computer.exception.SsdDiskUnmountableException;
 import org.example.product.memory.Memorable;
-import org.example.product.memory.SsdDisk;
 import org.example.product.memory.exception.RemoveMemoryException;
 import org.example.product.memory.exception.UseMemoryException;
 
@@ -119,7 +119,7 @@ public class Computer extends Product implements Ownerable, Memorable {
     public void unmount(Memorable memory) {
         if (!memory.isMountable()) {
 //            if (memory instanceof SsdDisk) { //does not have to bee here since there is only one such exception
-                throw new SsdDiskUnmoutableException("You cannot unmount this type of memory from computer! " + memory );
+                throw new SsdDiskUnmountableException("You cannot unmount this type of memory from computer! " + memory );
 //            }
         }
 

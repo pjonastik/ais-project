@@ -1,4 +1,4 @@
-package org.example.product.computer;
+package org.example.product.computer.exception;
 
 import org.example.product.memory.exception.MemoryException;
 
