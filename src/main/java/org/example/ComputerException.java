@@ -6,11 +6,4 @@ public class ComputerException extends Exception{
         super(message);
     }
 
-    public ComputerException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ComputerException(Throwable cause) {
-        super(cause);
-    }
 }

@@ -14,20 +14,21 @@ Implmenetuj metodu
  - Computer.mount a Computer.unmountnt- ktora umozni pripojit/odpojit SdCard a UsbKey do pocitataca.
     - Ak by sme sa pokusili vlozit SsdDisk, vyhodi sa vynimka SsdDiskUnmoutableException.
  */
-public class Computer implements Workable{
-    private String brand;
-    private String model;
-    private String manufactureDate;
-    private String expirationDate;
-    private int numberOfPreviousOwner;
-    private Boolean working;
-    private SsdDisk ssdDisk;
+public class Computer implements Workable {
+
+    private final String brand;
+    private final String model;
+    private final String manufactureDate;
+    private final String expirationDate;
+    private final int numberOfPreviousOwner;
+    private final Boolean working;
+    private final SsdDisk ssdDisk;
 
     private SdCard sdCard;
     private UsbKey usbKey;
 
-    public float getPerctentalUsage(){
-        return 100F/getTotalMemoryCapacity()*getUsedMemory();
+    public float getPerctentalUsage() {
+        return 100F / getTotalMemoryCapacity() * getUsedMemory();
     }
 
     public int getUsedMemory() {
@@ -36,103 +37,137 @@ public class Computer implements Workable{
         if (this.sdCard != null) {
             usedMemory = usedMemory + this.sdCard.usedMemory;
         }
-        if (this.usbKey != null){
+        if (this.usbKey != null) {
             usedMemory = usedMemory + this.usbKey.usedMemory;
         }
         return usedMemory;
     }
 
-    public int getTotalMemoryCapacity(){
+    public int getTotalMemoryCapacity() {
         int totalMemory = this.ssdDisk.getTotalMemoryCapacity();
 
         if (this.sdCard != null) {
             totalMemory = totalMemory + this.sdCard.getTotalMemoryCapacity();
         }
-        if (this.usbKey != null){
+        if (this.usbKey != null) {
             totalMemory = totalMemory + this.usbKey.getTotalMemoryCapacity();
         }
         return totalMemory;
 
     }
 
-    public int actualMemory(){
+    public int actualMemory() {
         int actualMemoryCapacity = this.ssdDisk.getActualMemoryCapacity();
 
         if (this.sdCard != null) {
             actualMemoryCapacity = actualMemoryCapacity + this.sdCard.getActualMemoryCapacity();
         }
-        if (this.usbKey != null){
+        if (this.usbKey != null) {
             actualMemoryCapacity = actualMemoryCapacity + this.usbKey.getActualMemoryCapacity();
         }
         return actualMemoryCapacity;
     }
 
     public void useMemory(int memoryToUse) throws ComputerException {
-        if (isWorking()){
-            if (actualMemory()>=memoryToUse){
-                if(ssdDisk.getActualMemoryCapacity()<=memoryToUse){
+        if (isWorking()) {
+            if (actualMemory() >= memoryToUse) {
+                if (ssdDisk.canUseMemory(memoryToUse)) {
                     ssdDisk.useMemory(memoryToUse);
-                }else {
+                } else {
                     ssdDisk.useMemory(ssdDisk.getActualMemoryCapacity());
-                    memoryToUse=memoryToUse-ssdDisk.getActualMemoryCapacity();
-                    if (sdCard.getActualMemoryCapacity()>=memoryToUse){
+                    memoryToUse = memoryToUse - ssdDisk.getActualMemoryCapacity();
+                    if (sdCard.canUseMemory(memoryToUse)) {
                         sdCard.useMemory(memoryToUse);
-                    }else {
+                    } else {
                         sdCard.useMemory(sdCard.getActualMemoryCapacity());
-                        memoryToUse=memoryToUse- sdCard.getActualMemoryCapacity();
+                        memoryToUse = memoryToUse - sdCard.getActualMemoryCapacity();
                         usbKey.useMemory(memoryToUse);
                     }
                 }
-            }else {
+            } else {
                 throw new ComputerException("Not enought of memory");
             }
-        }else {
+        } else {
             throw new ComputerException("ComponentIllegalStateException");
         }
     }
 
     public void removeMemory(int memoryToRemove) throws ComputerException {
-        if (isWorking()){
-            if (getUsedMemory()<memoryToRemove){
-                if(memoryToRemove >= 0){
-
-                }else {
+        if (isWorking()) {
+            if (getUsedMemory() > memoryToRemove) {
+                if (memoryToRemove >= 0) {
+                    if (ssdDisk.canRemoveMemory(memoryToRemove)) {
+                        ssdDisk.removeMemory(memoryToRemove);
+                    } else {
+                        ssdDisk.removeMemory(ssdDisk.getTotalMemoryCapacity());
+                        memoryToRemove = memoryToRemove - ssdDisk.getTotalMemoryCapacity();
+                        if (sdCard.canRemoveMemory(memoryToRemove)) {
+                            sdCard.removeMemory(memoryToRemove);
+                        } else {
+                            sdCard.removeMemory(sdCard.getTotalMemoryCapacity());
+                            memoryToRemove = memoryToRemove - getSdCard().getTotalMemoryCapacity();
+                            usbKey.removeMemory(memoryToRemove);
+                        }
+                    }
+                } else {
                     throw new ComputerException("You cannot remove less than 0 memory");
                 }
-            }else {
+            } else {
                 throw new ComputerException("You don't use so much memory");
             }
-        }else {
+        } else {
             throw new ComputerException("ComponentIllegalStateException");
         }
     }
 
-    public Computer mount(Computer computer, SdCard sdCard){
-        return mount(computer, sdCard, null);
+    public Computer mount(SdCard sdCard) {
+        return mount(sdCard, null);
     }
-    public Computer mount(Computer computer, UsbKey usbKey){
-        return mount(computer, null, usbKey);
+
+    public Computer mount(UsbKey usbKey) {
+        return mount(null, usbKey);
     }
-    public Computer mount(Computer computer, SdCard sdCard, UsbKey usbKey){
-        if (usbKey.equals(null)){
-            return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk, sdCard, computer.usbKey);
-        }else {
-            if (sdCard.equals(null)){
-            return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk, computer.sdCard, usbKey);
-            }else {
-                return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk, sdCard, usbKey);
+
+    public Computer mount(SdCard sdCard, UsbKey usbKey) {
+        if (usbKey == null) {
+            return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk, sdCard, this.usbKey);
+        } else {
+            if (sdCard == null) {
+                return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk, this.sdCard, usbKey);
+            } else {
+                return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk, sdCard, usbKey);
             }
         }
     }
 
-    public Computer unmount(Computer computer, SdCard sdCard, UsbKey usbKey){
-        if (usbKey.equals(null)){
-            return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk, computer.usbKey);
-        }else {
-            if (sdCard.equals(null)){
-                return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk, computer.sdCard);
-            }else {
-                return new Computer(computer.brand, computer.model, computer.manufactureDate, computer.expirationDate, computer.numberOfPreviousOwner, computer.working, computer.ssdDisk);
+    public Computer unmount(SdCard sdCard) throws ComputerException {
+        return unmount(sdCard, null);
+    }
+
+    public Computer unmount(UsbKey usbKey) throws ComputerException {
+        return unmount(null, usbKey);
+    }
+
+    public Computer unmount(SdCard sdCard, UsbKey usbKey) throws ComputerException {
+        if (usbKey == null) {
+            if (this.sdCard != null) {
+                return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk, this.usbKey);
+            } else {
+                throw new ComputerException("This computer hasn´t sdCard memory");
+            }
+        } else {
+            if (sdCard == null) {
+                if (this.usbKey != null) {
+                    return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk, this.sdCard);
+                } else {
+                    throw new ComputerException("This computer hasn´t usbKey memory");
+                }
+            } else {
+                if (this.usbKey == null || this.sdCard == null) {
+                    throw new ComputerException("This computer hasn´t the memory you want to use");
+                } else {
+                    return new Computer(this.brand, this.model, this.manufactureDate, this.expirationDate, this.numberOfPreviousOwner, this.working, this.ssdDisk);
+                }
             }
         }
     }
@@ -212,21 +247,19 @@ public class Computer implements Workable{
     }
 
     @Override
-    public Boolean isWorking(){
-//        try {
-//            if (working && ssdDisk.isWorking() && sdCard.isWorking() && usbKey.isWorking()) {
-//                working = true;
-//            }
-//        } catch (ComputerException e) {
-//            throw new ComputerException("ComponentIllegalStateException");
-//        }finally {
-//            return working;
-//        }
-        if (working && ssdDisk.isWorking() && sdCard.isWorking() && usbKey.isWorking()) {
-                working = true;
-        }else {
-            working= false;
+    public Boolean isWorking() {
+        if (this.sdCard == null || this.usbKey == null) {
+            if (this.sdCard == null && this.usbKey == null) {
+                return working && ssdDisk.isWorking();
+            } else {
+                if (this.sdCard == null) {
+                    return working && ssdDisk.isWorking() && usbKey.isWorking();
+                } else {
+                    return working && ssdDisk.isWorking() && sdCard.isWorking();
+                }
+            }
+        } else {
+            return working && ssdDisk.isWorking() && sdCard.isWorking() && usbKey.isWorking();
         }
-        return working;
     }
 }

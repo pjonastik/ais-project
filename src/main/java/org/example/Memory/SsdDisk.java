@@ -15,12 +15,12 @@ import org.example.Workable;
  */
 public class SsdDisk extends Memory {
 
-    private int totalMemoryCapacity;
-    private String brand;
-    private String model;
-    private String manufactureDate;
-    private String expirationDate;
-    private Boolean working;
+    private final int totalMemoryCapacity;
+    private final String brand;
+    private final String model;
+    private final String manufactureDate;
+    private final String expirationDate;
+    private final Boolean working;
     public int usedMemory;
 
     public int getActualMemoryCapacity() {
@@ -42,9 +42,7 @@ public class SsdDisk extends Memory {
     }
 
     public Boolean canUseMemory(int memorySize){
-        if (getActualMemoryCapacity()-memorySize>0){
-            return true;
-        }else return false;
+        return getActualMemoryCapacity() <= memorySize;
     }
 
     public void useMemory(int memorySize){
@@ -52,9 +50,7 @@ public class SsdDisk extends Memory {
     }
 
     public Boolean canRemoveMemory(int memorySize) {
-        if (usedMemory-memorySize>=0){
-            return true;
-        }else return false;
+        return usedMemory - memorySize >= 0;
     }
     public void removeMemory(int memorySize){
         usedMemory = usedMemory-memorySize;

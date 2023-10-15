@@ -5,13 +5,13 @@ import java.util.Objects;
 
 public class SdCard extends Memory {
 
-    private int totalMemoryCapacity;
-    private String brand;
-    private String model;
-    private String manufactureDate;
-    private String expirationDate;
-    private int numberOfPreviousOwner;
-    private Boolean working;
+    private final int totalMemoryCapacity;
+    private final String brand;
+    private final String model;
+    private final String manufactureDate;
+    private final String expirationDate;
+    private final int numberOfPreviousOwner;
+    private final Boolean working;
     public int usedMemory;
 
     public int getActualMemoryCapacity() {
@@ -32,26 +32,24 @@ public class SdCard extends Memory {
         return totalMemoryCapacity;
     }
 
-    public Boolean canUseMemory(int memorySize){
-        if (getActualMemoryCapacity()-memorySize>0){
-            return true;
-        }else return false;
+    public Boolean canUseMemory(int memorySize) {
+        return getActualMemoryCapacity() <= memorySize;
     }
 
-    public void useMemory(int memorySize)  {
-            usedMemory=usedMemory+memorySize;
+    public void useMemory(int memorySize) {
+        usedMemory = usedMemory + memorySize;
     }
 
     public Boolean canRemoveMemory(int memorySize) {
-        if (usedMemory-memorySize>=0){
-            return true;
-        }else return false;
+        return usedMemory - memorySize >= 0;
     }
-    public void removeMemory(int memorySize){
-        usedMemory = usedMemory-memorySize;
+
+    public void removeMemory(int memorySize) {
+        usedMemory = usedMemory - memorySize;
     }
-    public float getPerctentalUsage(){
-        return 100/totalMemoryCapacity*usedMemory;
+
+    public float getPerctentalUsage() {
+        return 100 / totalMemoryCapacity * usedMemory;
     }
 
     @Override
@@ -87,7 +85,7 @@ public class SdCard extends Memory {
     }
 
     @Override
-    public Boolean isWorking(){
+    public Boolean isWorking() {
         return working;
     }
 }
