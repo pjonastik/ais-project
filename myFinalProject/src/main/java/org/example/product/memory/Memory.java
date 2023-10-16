@@ -2,6 +2,7 @@ package org.example.product.memory;
 
 import org.example.product.Product;
 import org.example.product.memory.exception.ComponentIllegalStateException;
+import org.example.product.memory.exception.MemoryInvalidException;
 import org.example.product.memory.exception.RemoveMemoryException;
 import org.example.product.memory.exception.UseMemoryException;
 
@@ -12,6 +13,9 @@ public abstract class Memory extends Product implements Memorable {
     protected int actualCapacity; //MB
     public Memory(String brand, String model, int totalCapacity) {
         super(brand, model);
+        if(totalCapacity <= 0) {
+            throw new MemoryInvalidException("Total capacity cannot be less or equals than 0.");
+        }
         this.totalCapacity = totalCapacity;
     }
 

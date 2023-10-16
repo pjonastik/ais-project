@@ -7,8 +7,7 @@ import org.example.product.memory.SsdDisk;
 import org.example.product.memory.UsbKey;
 
 
-public class App 
-{
+public class App {
     public static void main( String[] args ) {
         System.out.println( "Hello AIS, this is my example of computer" );
 

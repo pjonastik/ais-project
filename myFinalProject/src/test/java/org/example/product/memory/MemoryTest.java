@@ -1,12 +1,14 @@
 package org.example.product.memory;
 
 import org.example.product.memory.exception.ComponentIllegalStateException;
+import org.example.product.memory.exception.MemoryInvalidException;
 import org.example.product.memory.exception.UseMemoryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemoryTest {
 
@@ -26,8 +28,29 @@ class MemoryTest {
     }
 
     @Test
-    void createdProperly() {
+    void createdInvalidInstanceZeroTotalCapacity() {
+        Assertions.assertThrows(MemoryInvalidException.class, () -> {
+            new Memory("dummy", "dummy", 0) {
+                @Override
+                public boolean isMountable() {
+                    return false; //dummy method
+                }
+                //Test double
+            };
+        });
+    }
 
+    @Test
+    void createdInvalidInstanceNegativeTotalCapacity() {
+        Assertions.assertThrows(MemoryInvalidException.class, () -> {
+            new Memory("dummy", "dummy", -1) {
+                @Override
+                public boolean isMountable() {
+                    return false; //dummy method
+                }
+                //Test double
+            };
+        });
     }
 
     @Test
