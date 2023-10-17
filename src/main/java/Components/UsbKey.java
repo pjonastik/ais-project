@@ -1,3 +1,5 @@
+package Components;
+
 /*
 celková kapacita pamäte
 značka
@@ -12,6 +14,11 @@ public class UsbKey extends AbstractComponent {
     public UsbKey(String brand, String model, String dateOfManufacture, String dateOfExpiration, int memorySize, int usedMemory, boolean working) {
         super(brand, model, dateOfManufacture, dateOfExpiration, memorySize, usedMemory, working);
         this.usbType = usbType;
+    }
+
+    @Override
+    public boolean isWorkable() {
+        return this.working;
     }
 }
 

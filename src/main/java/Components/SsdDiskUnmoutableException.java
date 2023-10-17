@@ -1,3 +1,4 @@
-public class SsdDiskUnmoutableException extends Exception{
+package Components;
 
+public class SsdDiskUnmoutableException extends Exception{
 }

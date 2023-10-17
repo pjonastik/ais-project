@@ -1,5 +1,7 @@
+package Components;
+
 /*
-Vytvor triedu Computer s nasledovnými atribútmi:
+Vytvor triedu Components.Computer s nasledovnými atribútmi:
 značka
 model
 dátum výroby
@@ -12,5 +14,10 @@ public class SsdDisk extends AbstractComponent {
 
     public SsdDisk(String brand, String model, String dateOfManufacture, String dateOfExpiration, int numPreviousOwners, int memorySize, int usedMemory, boolean working) {
         super(brand, model, dateOfManufacture, dateOfExpiration, memorySize, usedMemory, working);
+    }
+
+    @Override
+    public boolean isWorkable() {
+        return this.working;
     }
 }

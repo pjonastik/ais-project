@@ -1,4 +1,8 @@
-abstract class AbstractComponent {
+package Components;
+
+import java.util.Objects;
+
+abstract class AbstractComponent implements Workable{
     public String brand;
     public String model;
     public String dateOfManufacture;
@@ -26,7 +30,7 @@ abstract class AbstractComponent {
     }
 
     public boolean canUseMemory(int memorySize) throws ComponentIllegalStateException {
-        if(!this.working){
+        if(!this.isWorking()){
             throw new ComponentIllegalStateException();
         }
         return getActualCapacity() >= memorySize;
@@ -50,7 +54,7 @@ abstract class AbstractComponent {
 
     public int removeMemory(int size) throws NotEnoughMemoryException {
         if(!canRemoveMemory(size)){
-            throw new NotEnoughMemoryException();
+            throw new NotEnoughMemoryException(size);
         } else {
             usedMemory -= size;
         }
@@ -59,5 +63,40 @@ abstract class AbstractComponent {
 
     public float getPercentageUsage() {
         return ((float) usedMemory*100)/getTotalCapacity();
+    }
+
+    public boolean isWorking(){
+        return working;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractComponent that = (AbstractComponent) o;
+        return memorySize == that.memorySize && usedMemory == that.usedMemory && working == that.working && Objects.equals(brand, that.brand) && Objects.equals(
+                model, that.model) && Objects.equals(dateOfManufacture, that.dateOfManufacture) && Objects.equals(dateOfExpiration, that.dateOfExpiration);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(brand, model, dateOfManufacture, dateOfExpiration, memorySize, usedMemory, working);
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractComponent{" +
+                " Znacka ='" + brand + '\'' +
+                ", Model ='" + model + '\'' +
+                ", Datum vyroby ='" + dateOfManufacture + '\'' +
+                ", datum expirace='" + dateOfExpiration + '\'' +
+                ", pamet =" + memorySize +
+                ", pouzita pamet=" + usedMemory +
+                ", funguje =" + working +
+                '}';
     }
 }

@@ -1,3 +1,5 @@
+package Components;
+
 /*
 celková kapacita pamäte
 značka
@@ -13,5 +15,10 @@ public class SdCard extends AbstractComponent {
     public SdCard(String brand, String model, String dateOfManufacture, String dateOfExpiration, int numPreviousOwners, int memorySize, int usedMemory, boolean working) {
         super(brand, model, dateOfManufacture, dateOfExpiration, memorySize, usedMemory, working);
         this.numberOfPreviousOwners = numPreviousOwners;
+    }
+
+    @Override
+    public boolean isWorkable() {
+        return this.working;
     }
 }
