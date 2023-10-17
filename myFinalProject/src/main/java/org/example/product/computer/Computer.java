@@ -113,6 +113,11 @@ public class Computer extends Product implements Ownerable, Memorable {
     }
 
     public void mount(Memorable memorable) {
+        if (!memorable.isMountable()) {
+//            if (memory instanceof SsdDisk) { //does not have to bee here since there is only one such exception
+            throw new SsdDiskUnmountableException("You cannot mount this type of memory to computer! " + memorable );
+//            }
+        }
         memories.add(memorable);
     }
 

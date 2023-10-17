@@ -57,17 +57,17 @@ class ComputerTest {
     }
 
     @Test
-    void unmountUnsupportedMemoryDevices() {
-        Assertions.assertThrows(UnmountMemoryException.class, () -> {
+    void mountUnsupportedMemoryDevices() {
+        Assertions.assertThrows(SsdDiskUnmountableException.class, () -> {
             Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
             Computer computer = new Computer("Lenovo", "T460", ssdDisk);
 
-            computer.unmount(ssdDisk);
+            computer.mount(ssdDisk);
         });
     }
 
     @Test
-    void unmountUnsupportedMemoryDevices2() {
+    void unmountUnsupportedMemoryDevices() {
         Assertions.assertThrows(SsdDiskUnmountableException.class, () -> {
             Memorable ssdDisk = new SsdDisk("Samsung", "X1", 500);
             Computer computer = new Computer("Lenovo", "T460", ssdDisk);
