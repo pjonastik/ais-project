@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public abstract class Memory extends Product implements Memorable {
     protected int totalCapacity; //MB
-    protected int actualCapacity; //MB
+    protected int actualUsage; //MB
     public Memory(String brand, String model, int totalCapacity) {
         super(brand, model);
         if(totalCapacity <= 0) {
@@ -26,17 +26,17 @@ public abstract class Memory extends Product implements Memorable {
 
     @Override
     public int getActualUsage() {
-        return actualCapacity;
+        return actualUsage;
     }
 
     @Override
     public int getFreeCapacity() {
-        return totalCapacity - actualCapacity;
+        return totalCapacity - actualUsage;
     }
 
     @Override
     public boolean canUseMemory(int memorySize) {
-        int freeCapacity = totalCapacity - actualCapacity;
+        int freeCapacity = totalCapacity - actualUsage;
         return (freeCapacity - memorySize) >= 0;
     }
 
@@ -48,14 +48,14 @@ public abstract class Memory extends Product implements Memorable {
         if (!canUseMemory(memorySize)) {
             throw new UseMemoryException(
                     String.format("Actual usage is '%s'. Cannot use '%s'. ",
-                            actualCapacity, memorySize));
+                            actualUsage, memorySize));
         }
-        actualCapacity += memorySize;
+        actualUsage += memorySize;
     }
 
     @Override
     public boolean canRemoveMemory(int memorySize) {
-        return (actualCapacity - memorySize) >= 0;
+        return (actualUsage - memorySize) >= 0;
     }
 
     @Override
@@ -65,14 +65,14 @@ public abstract class Memory extends Product implements Memorable {
         }
         if (!canRemoveMemory(memorySize)) {
             throw new RemoveMemoryException(
-                    String.format("Free capacity is '%s'. Wanted to remove '%s' ", actualCapacity, memorySize));
+                    String.format("Free capacity is '%s'. Wanted to remove '%s' ", actualUsage, memorySize));
         }
-        actualCapacity -= memorySize;
+        actualUsage -= memorySize;
     }
 
     @Override
     public float getPercentageUsage() {
-        return actualCapacity / (float)totalCapacity;
+        return actualUsage / (float)totalCapacity;
     }
 
     @Override
@@ -82,19 +82,19 @@ public abstract class Memory extends Product implements Memorable {
         if (!super.equals(o)) return false;
         Memory memory = (Memory) o;
         return totalCapacity == memory.totalCapacity &&
-                actualCapacity == memory.actualCapacity;
+                actualUsage == memory.actualUsage;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), totalCapacity, actualCapacity);
+        return Objects.hash(super.hashCode(), totalCapacity, actualUsage);
     }
 
     @Override
     public String toString() {
         return "Memory{" +
                 "totalCapacity=" + totalCapacity +
-                ", actualCapacity=" + actualCapacity +
+                ", actualCapacity=" + actualUsage +
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", dateOfMade=" + dateOfMade +

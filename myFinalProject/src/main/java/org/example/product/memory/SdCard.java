@@ -41,7 +41,7 @@ public class SdCard extends Memory implements Ownerable {
         return "SdCard{" +
                 "numberOfPreviousOwners=" + numberOfPreviousOwners +
                 ", totalCapacity=" + totalCapacity +
-                ", actualCapacity=" + actualCapacity +
+                ", actualCapacity=" + actualUsage +
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", dateOfMade=" + dateOfMade +
