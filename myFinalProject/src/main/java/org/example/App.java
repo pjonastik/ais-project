@@ -53,7 +53,7 @@ public class App {
     private static void printComputerMemoryInfo(Computer computer) {
         System.out.println("+------------------------------------------------------------+");
         System.out.println(String.format("Usage of computer's memory is %3.2f %% [%d/%d] Mb.",
-                computer.getPercentageUsage() ,computer.getActualCapacity(), computer.getTotalCapacity()));
+                computer.getPercentageUsage() ,computer.getActualUsage(), computer.getTotalCapacity()));
         System.out.println("+------------------------------------------------------------+");
     }
 }

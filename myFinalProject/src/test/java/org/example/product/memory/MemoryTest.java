@@ -68,20 +68,20 @@ class MemoryTest {
     @Test
     void useMemory() {
         memorable.useMemory(200);
-        assertThat(memorable.getActualCapacity()).isEqualTo(200);
+        assertThat(memorable.getActualUsage()).isEqualTo(200);
 
         memorable.useMemory(200);
-        assertThat(memorable.getActualCapacity()).isEqualTo(400);
+        assertThat(memorable.getActualUsage()).isEqualTo(400);
 
         memorable.useMemory(100);
-        assertThat(memorable.getActualCapacity()).isEqualTo(500);
+        assertThat(memorable.getActualUsage()).isEqualTo(500);
     }
 
     @Test
     void useMemoryZeroIsPossible() {
         memorable.useMemory(0);
 
-        assertThat(memorable.getActualCapacity()).isEqualTo(0);
+        assertThat(memorable.getActualUsage()).isEqualTo(0);
     }
 
     @Test
@@ -112,13 +112,13 @@ class MemoryTest {
         memorable.useMemory(500);
 
         memorable.removeMemory(200);
-        assertThat(memorable.getActualCapacity()).isEqualTo(300);
+        assertThat(memorable.getActualUsage()).isEqualTo(300);
 
         memorable.removeMemory(200);
-        assertThat(memorable.getActualCapacity()).isEqualTo(100);
+        assertThat(memorable.getActualUsage()).isEqualTo(100);
 
         memorable.removeMemory(100);
-        assertThat(memorable.getActualCapacity()).isEqualTo(0);
+        assertThat(memorable.getActualUsage()).isEqualTo(0);
     }
 
     @Test

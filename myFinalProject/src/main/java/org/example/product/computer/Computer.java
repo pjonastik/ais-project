@@ -40,20 +40,20 @@ public class Computer extends Product implements Ownerable, Memorable {
     }
 
     @Override
-    public int getActualCapacity() {
+    public int getActualUsage() {
         return memories.stream()
-                .map(Memorable::getActualCapacity)
+                .map(Memorable::getActualUsage)
                 .reduce(0, Integer::sum);
     }
 
     @Override
     public int getFreeCapacity() {
-        return getTotalCapacity() - getActualCapacity();
+        return getTotalCapacity() - getActualUsage();
     }
 
     @Override
     public boolean canUseMemory(int memoryToBeUsed) {
-        int freeCapacity = getTotalCapacity() - getActualCapacity();
+        int freeCapacity = getTotalCapacity() - getActualUsage();
         return (freeCapacity - memoryToBeUsed) >= 0;
     }
 
@@ -62,7 +62,7 @@ public class Computer extends Product implements Ownerable, Memorable {
         if (getFreeCapacity() < memoryToBeUsed) {
             throw new UseMemoryException(
                 String.format("Memory usage ['%s'/'%s']. Not enough space for '%s'.",
-                        getActualCapacity(), getTotalCapacity(), memoryToBeUsed));
+                        getActualUsage(), getTotalCapacity(), memoryToBeUsed));
         }
 
         int restOfMemorySize = memoryToBeUsed;
@@ -79,15 +79,15 @@ public class Computer extends Product implements Ownerable, Memorable {
 
     @Override
     public boolean canRemoveMemory(int memoryToBeRemoved) {
-        return memoryToBeRemoved <= getActualCapacity();
+        return memoryToBeRemoved <= getActualUsage();
     }
 
     @Override
     public void removeMemory(int memoryToBeRemoved) {
-        if (getActualCapacity() < memoryToBeRemoved) {
+        if (getActualUsage() < memoryToBeRemoved) {
             throw new RemoveMemoryException(
                     String.format("Memory usage ['%s'/'%s']. Not enough used memory to remove space '%s' Mb.",
-                            getActualCapacity(), getTotalCapacity(), memoryToBeRemoved));
+                            getActualUsage(), getTotalCapacity(), memoryToBeRemoved));
         }
 
         int restOfMemorySize = memoryToBeRemoved;
@@ -96,15 +96,15 @@ public class Computer extends Product implements Ownerable, Memorable {
                 memory.removeMemory(restOfMemorySize);
                 break;
             } else {
-                restOfMemorySize -= memory.getActualCapacity();
-                memory.removeMemory(memory.getActualCapacity());
+                restOfMemorySize -= memory.getActualUsage();
+                memory.removeMemory(memory.getActualUsage());
             }
         }
     }
 
     @Override
     public float getPercentageUsage() {
-        return (getActualCapacity() / (float)getTotalCapacity())*100;
+        return (getActualUsage() / (float)getTotalCapacity())*100;
     }
 
     @Override

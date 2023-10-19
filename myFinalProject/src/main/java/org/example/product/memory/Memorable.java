@@ -3,7 +3,7 @@ package org.example.product.memory;
 public interface Memorable {
 
     int getTotalCapacity();
-    int getActualCapacity();
+    int getActualUsage();
     boolean canUseMemory(int memorySize);
     void useMemory(int memorySize);
 

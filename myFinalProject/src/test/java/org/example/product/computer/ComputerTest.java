@@ -1,7 +1,6 @@
 package org.example.product.computer;
 
 import org.example.product.computer.exception.SsdDiskUnmountableException;
-import org.example.product.computer.exception.UnmountMemoryException;
 import org.example.product.memory.Memorable;
 import org.example.product.memory.SdCard;
 import org.example.product.memory.SsdDisk;
@@ -83,7 +82,7 @@ class ComputerTest {
 
         Computer computer = new Computer("Lenovo", "T460", ssdDisk);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(50);
+        assertThat(computer.getActualUsage()).isEqualTo(50);
 
         Memorable usb = new UsbKey("Keystone", "X2", 50);
         usb.useMemory(10);
@@ -93,7 +92,7 @@ class ComputerTest {
         sdCard.useMemory(10);
         computer.mount(sdCard);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(70);
+        assertThat(computer.getActualUsage()).isEqualTo(70);
     }
 
     @Test
@@ -158,7 +157,7 @@ class ComputerTest {
 
         computer.useMemory(8);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(8);
+        assertThat(computer.getActualUsage()).isEqualTo(8);
     }
 
     @Test
@@ -193,7 +192,7 @@ class ComputerTest {
 
         computer.removeMemory(5);
 
-        assertThat(computer.getActualCapacity()).isEqualTo(1);
+        assertThat(computer.getActualUsage()).isEqualTo(1);
     }
 
     @Test

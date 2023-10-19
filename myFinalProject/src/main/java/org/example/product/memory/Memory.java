@@ -25,7 +25,7 @@ public abstract class Memory extends Product implements Memorable {
     }
 
     @Override
-    public int getActualCapacity() {
+    public int getActualUsage() {
         return actualCapacity;
     }
 
